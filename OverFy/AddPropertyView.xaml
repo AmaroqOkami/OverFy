@@ -26,9 +26,10 @@
             <Label Content="New Property" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="#DDFFFFFF"/>
         </materialDesign:ColorZone>
         <Button Content="Add" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" Click="Button_Click" Grid.Row="1" Grid.Column="1"/>
-        <ComboBox Margin="4.4,51,10,0" VerticalAlignment="Top" x:Name="comboProperty" Grid.RowSpan="2" Grid.Column="1">
+        <ComboBox Margin="4,51,0,0" VerticalAlignment="Top" x:Name="comboProperty" Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Left" Width="176">
             <ComboBoxItem Content="Song Name" />
             <ComboBoxItem Content="Artist Name" />
+            <ComboBoxItem Content="Song and Artist Name" />
             <ComboBoxItem Content="Album Name" />
             <ComboBoxItem Content="Song Running Time" />
             <ComboBoxItem Content="Label" />

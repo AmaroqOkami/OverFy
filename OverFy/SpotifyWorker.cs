@@ -151,8 +151,10 @@ namespace OverFy
                     switch (item)
                     {
                         case "System Time 12h":
+                            result.Append(DateTime.Now.ToString("hh:mm tt", CultureInfo.InvariantCulture));
                             break;
                         case "System Time 24h":
+                            result.Append(DateTime.Now.ToString("HH:mm", CultureInfo.InvariantCulture));
                             break;
                         case "Song Name":
                             result.Append(NormalizeString(currentStatus.Track.TrackResource.Name));
@@ -160,6 +162,14 @@ namespace OverFy
                             break;
                         case "Artist Name":
                             result.Append(NormalizeString(currentStatus.Track.ArtistResource.Name));
+                            break;
+                        case "Song and Artist Name":
+                            if (currentStatus.Track.TrackResource.Name != "" && currentStatus.Track.ArtistResource.Name != "")
+                                result.Append(NormalizeString("\"" + currentStatus.Track.TrackResource.Name + "\" - " + currentStatus.Track.ArtistResource.Name));
+                            else if (currentStatus.Track.TrackResource.Name != "" && currentStatus.Track.ArtistResource.Name == "")
+                                result.Append(NormalizeString("\"" + currentStatus.Track.TrackResource.Name + "\""));
+                            else
+                                result.Append("Track data missing");
                             break;
                         case "Song Running Time":
                             TimeSpan runningTime = TimeSpan.FromSeconds(currentStatus.PlayingPosition);
@@ -179,32 +189,6 @@ namespace OverFy
                             result.Append(item);
                             break;
                     }
-
-                    if (result.ToString() != String.Empty &&
-                        item != "Label" &&
-                        item != lastItem &&
-                        item != "System Time 24h" &&
-                        item != "System Time 12h")
-                    {
-                        result.Append(", ");
-                    }
-                }
-            }
-
-            if (App.appSettings.PropertiesOrder.Contains("System Time 12h") || App.appSettings.PropertiesOrder.Contains("System Time 24h"))
-            {
-                if (!String.IsNullOrEmpty(result.ToString()))
-                {
-                    result.AppendLine();
-                }
-
-                if (App.appSettings.PropertiesOrder.Contains("System Time 24h"))
-                {
-                    result.Append(DateTime.Now.ToString("HH:mm", CultureInfo.InvariantCulture));
-                }
-                else
-                {
-                    result.Append(DateTime.Now.ToString("hh:mm tt", CultureInfo.InvariantCulture));
                 }
             }
 
@@ -218,9 +202,26 @@ namespace OverFy
         /// <returns></returns>
         private string NormalizeString(string input)
         {
-            var decomposed = input.Normalize(NormalizationForm.FormD);
-            var filtered = decomposed.Where(c => char.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark);
-            return new String(filtered.ToArray());
+            ///New Method
+            byte[] tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(input);
+            string normalizedString = Encoding.UTF8.GetString(tempBytes);
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                if (c != '�')
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString();
+
+            ///Original Method
+            //var decomposed = input.Normalize(NormalizationForm.FormD);
+            //var filtered = decomposed.Where(c => char.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark);
+            //return new String(filtered.ToArray());
         }
     }
 }
